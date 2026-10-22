@@ -36,3 +36,12 @@ Backend for the UREP 32 palm-reader attendance project (UDST). The supervisors a
 - `GET /students/:id/overview` serves the student app (`urep-student-attendance/mobile-app`, through its `/api` proxy). It has no authentication, which is acceptable only while the data is simulated.
 - Migration 003 adds SIS display fields (`students`, `courses.title`, `schedule.instructor`). They are nullable and never used by the attendance logic.
 - `.DONOTCOMMIT/` holds private WhatsApp exports, and `*.pdf` and `*.docx` are ignored. Never commit them.
+
+### Hosting
+
+Deploy Manager on Alireza's VPS releases validated `main` commits as app `urep-attendance-api`: loopback port 3340, health `/health`, runtime env `/etc/deploy-manager/runtime-env/urep-attendance-api.env` (root-only, holds `DATABASE_URL`). It has no public route. The DNS name in the manager's topology is a placeholder, with no record or Caddy site behind it. Keep it that way while the write endpoints are unauthenticated.
+
+- PostgreSQL runs as the long-lived container `urep-attendance-postgres` (volume `urep-attendance-postgres-data`) on the private network `urep-attendance-private`. Rollouts never touch it, and migrations run when the API starts.
+- The student app (`urep-attendance`) joins the same network and proxies its reads through `ATTENDANCE_API_URL=http://urep-attendance-api:3000`.
+- `urep-attendance-sim.timer` (systemd, every 5 minutes) runs `docker exec urep-attendance-api node dist/scripts/simulate.js catch-up`. To re-check every day, run the same command with `--from 2026-08-30 --verify`.
+- Use the existing release path for redeploys. A repeat of an already released SHA returns the original job, so a redeploy needs a new commit.
