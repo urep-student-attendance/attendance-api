@@ -1,0 +1,19 @@
+# Managed by al-stack. Keep extended prose in AGENTS.md.
+"schema" = 1
+
+["project"]
+"id" = "db99f11e-a43b-4ac7-b54e-52c857f604f5"
+"name" = "urep"
+"status" = "experimental"
+"profile" = "general"
+"purpose" = "Attendance API for the UREP 32 palm-reader project: ingests reader scans, maps them to students and rooms, and computes lecture attendance in PostgreSQL"
+
+["stack"]
+"version" = "0.1.0"
+"revision" = "11eac15f6a8a0dc76f06ef97c7c3a27c7f668e0a+dirty.14419bcd734fed27"
+
+["commands"]
+"dev" = "npm run dev"
+"test" = "npm test"
+"build" = "npm run build"
+"sim" = "npm run sim -- day --date 2026-10-25"

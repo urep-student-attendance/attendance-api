@@ -105,9 +105,11 @@ If a student scans multiple times for the same lecture, the earliest valid scan 
 | `GET` | `/parameters` | Lists attendance parameters. |
 | `PUT` | `/parameters/:name` | Updates a parameter value, including setting `Time_after_lecture_start` to `null`. |
 | `POST` | `/time-logs` | Inserts a raw PALM reader scan. |
+| `POST` | `/time-logs/batch` | Inserts up to 1000 buffered scans from a reader that was offline. |
 | `POST` | `/time-log-mappings/process` | Maps raw logs to student and room records. |
 | `POST` | `/attendance/process` | Processes mapped logs into attendance rows. |
 | `GET` | `/attendance` | Lists attendance rows with optional filters. |
+| `GET` | `/students/:id/overview` | One student's sections, lectures, palm registration, raw scans, attendance and parameters, for the student app. |
 
 Example scan request:
 

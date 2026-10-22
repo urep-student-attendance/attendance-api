@@ -103,7 +103,8 @@ async function createMappedScan(scanTime: string, palm = "palm-1", device = "dev
 
 try {
   await pool.query("SELECT 1");
-} catch {
+} catch (error) {
+  if (process.env.REQUIRE_DATABASE) throw error;
   databaseAvailable = false;
   console.warn("Skipping integration tests because PostgreSQL is not available.");
 }

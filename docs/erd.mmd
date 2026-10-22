@@ -1,0 +1,93 @@
+erDiagram
+  palm_reg {
+    bigserial id PK
+    integer student_id "SIS student ID (60xxxxxx)"
+    text student_palm UK "palm ID from the reader"
+    timestamptz created_at
+  }
+  rooms {
+    bigserial id PK
+    text room UK "e.g. 10.2.33"
+  }
+  device_room {
+    bigserial id PK
+    text device_id UK "reader serial"
+    bigint room_id FK
+    timestamptz created_at
+  }
+  time_log {
+    bigserial id PK
+    text device_id
+    timestamptz time "scan time from the reader"
+    text student_palm
+    boolean transferred "mapped yet?"
+    timestamptz created_at "received by server"
+  }
+  time_log_mapping {
+    bigserial id PK
+    bigint time_log_id FK,UK
+    bigint room_id FK
+    integer student_id
+    timestamptz time
+    timestamptz created_at
+  }
+  courses {
+    bigserial id PK
+    char4 subject "INF"
+    char4 course_num "1201"
+    text title "SIS display field"
+  }
+  schedule {
+    bigserial id PK
+    integer academic_year
+    smallint semester
+    bigint course_id FK
+    bigint room_id FK
+    text section
+    text instructor "SIS display field"
+  }
+  registration {
+    bigserial id PK
+    bigint schedule_id FK
+    integer student_id
+  }
+  lectures {
+    bigserial id PK
+    bigint schedule_id FK
+    date lecture_date
+    time start_time
+    time end_time
+  }
+  student_attendance {
+    bigserial id PK
+    bigint lecture_id FK
+    integer student_id
+    enum status "present | absent"
+    timestamptz scan_time
+    integer late_minutes
+    text reason
+  }
+  students {
+    integer student_id PK "SIS stand-in"
+    text name
+    text program
+  }
+  parameters {
+    text name PK
+    integer value "minutes, nullable"
+    text description
+  }
+
+  rooms ||--o{ device_room : "has readers"
+  device_room ||--o{ time_log : "device_id sends"
+  palm_reg ||--o{ time_log : "student_palm"
+  time_log ||--o| time_log_mapping : "mapped to"
+  rooms ||--o{ time_log_mapping : "room_id"
+  palm_reg ||--o{ time_log_mapping : "student_id"
+  courses ||--o{ schedule : "offered as"
+  rooms ||--o{ schedule : "taught in"
+  schedule ||--o{ registration : "enrols"
+  schedule ||--o{ lectures : "meets as"
+  lectures ||--o{ student_attendance : "records"
+  registration ||--o{ student_attendance : "expected student"
+  students ||--o{ registration : "student_id"

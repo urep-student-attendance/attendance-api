@@ -3,6 +3,7 @@ import express from "express";
 import { attendanceRouter } from "./routes/attendance.js";
 import { parametersRouter } from "./routes/parameters.js";
 import { timeLogMappingsRouter } from "./routes/timeLogMappings.js";
+import { studentsRouter } from "./routes/students.js";
 import { timeLogsRouter } from "./routes/timeLogs.js";
 import { pool } from "./db.js";
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -26,6 +27,7 @@ export function createApp() {
   app.use("/time-logs", timeLogsRouter);
   app.use("/time-log-mappings", timeLogMappingsRouter);
   app.use("/attendance", attendanceRouter);
+  app.use("/students", studentsRouter);
 
   app.use(errorHandler);
 
