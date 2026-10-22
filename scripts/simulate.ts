@@ -5,7 +5,7 @@
 //   npm run sim -- seed --from 2026-10-25 --to 2026-11-05
 //   npm run sim -- day --date 2026-10-25 [--speed 60] [--live] [--dry-run]
 //   npm run sim -- scan --device WP500-Q24A0101 --palm PV-1234ABCD [--at 2026-10-25T08:02:00+03:00]
-//   npm run sim -- catch-up [--from 2026-08-30] [--until 2026-10-25T12:00:00+03:00]
+//   npm run sim -- catch-up [--from 2026-08-30] [--until 2026-10-25T12:00:00+03:00] [--verify]
 //                                                  send every scan due by now that the API lacks
 //                                                  (default: yesterday and today); run it on a timer
 import { parseArgs } from "node:util";
@@ -27,6 +27,7 @@ const { positionals, values } = parseArgs({
     live: { type: "boolean", default: false },
     "dry-run": { type: "boolean", default: false },
     "no-outages": { type: "boolean", default: false },
+    verify: { type: "boolean", default: false },
     device: { type: "string" },
     palm: { type: "string" },
     at: { type: "string" },
@@ -130,7 +131,7 @@ async function main() {
       const from = values.from ?? addDays(todayInDoha(until), -1);
       const parameters = await readParameters();
       const { catchUp } = await import("../src/simulator/catchUp.js");
-      const days = await withPool((pool) => catchUp({ campus, pool, transport: api, parameters, from, until }));
+      const days = await withPool((pool) => catchUp({ campus, pool, transport: api, parameters, from, until, verifyComplete: values.verify }));
       for (const day of days) {
         console.log(
           `${day.date}: sent ${day.sent}, ${day.pending} still to come` +

@@ -176,6 +176,7 @@ run("simulated readers against the API", () => {
 
     const again = await run("10:00");
     expect(again.every((d) => d.sent === 0)).toBe(true);
+    expect(again[0].mismatches).toBeUndefined(); // already verified, not re-checked
     expect((await pool.query("SELECT count(*)::int AS n FROM time_log")).rows[0].n).toBe(afterMorning);
 
     const night = await run("23:59");

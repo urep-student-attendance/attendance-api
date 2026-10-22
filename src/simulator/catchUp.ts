@@ -14,7 +14,7 @@ export type CatchUpDay = {
   date: string;
   sent: number;
   pending: number;
-  /** Set once the whole day has been delivered. */
+  /** Set when the run that completed the day (or verifyComplete) checked its attendance. */
   mismatches?: number;
 };
 
@@ -25,6 +25,8 @@ export async function catchUp(input: {
   parameters: AttendanceParameters;
   from: string;
   until: number;
+  /** Also verify complete days that needed no new scans. */
+  verifyComplete?: boolean;
 }): Promise<CatchUpDay[]> {
   const to = todayInDoha(input.until);
   if (input.from > to) return [];
@@ -45,7 +47,8 @@ export async function catchUp(input: {
     await deliverDay({ ...day, events: pending }, input.transport);
 
     const result: CatchUpDay = { date, sent: pending.length, pending: day.events.length - due.length };
-    if (result.pending === 0) {
+    // Verify a day once, on the run that delivers its last scans (or when asked to re-check).
+    if (result.pending === 0 && (result.sent > 0 || input.verifyComplete)) {
       const actual = await input.transport.listAttendance();
       result.mismatches = compareAttendance(day.expected, actual, lectureIds).length;
     }
