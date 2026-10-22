@@ -75,7 +75,7 @@ curl -X POST http://localhost:3000/time-logs/batch \
   -d "{\"scans\":[{\"device_id\":\"WP500-Q24A0101\",\"student_palm\":\"PV-1\",\"scan_time\":\"2026-10-25T08:01:00+03:00\"}]}"
 ```
 
-The student app reads one student's data in a single call:
+A read-only public view runs at https://attendance-api.alirezaafshan.com (simulated data; writes are not exposed). The student app reads one student's data in a single call:
 
 ```bash
 curl http://localhost:3000/students/60301855/overview

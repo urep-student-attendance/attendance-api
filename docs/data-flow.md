@@ -10,7 +10,7 @@ The schema is Dr. Ghassan's ERM from the project tasks document, implemented in 
 | --- | --- | --- |
 | Palm reader (WavePass500) | Being configured by Dr. Wagdi and Azka | Vendor docs shared 18 Jun 2026: spec, *Small Scale PalmSDK-L (Server version) User Guide*, free 10,000-ID POC licence. The Android SDK came on 23 Sep 2026. Dr. Wagdi is writing a small app on the device to work around its limitations. |
 | Reader simulator | Built (`npm run sim`) | Stands in for the readers. It posts the same request a reader will post. |
-| Attendance API | Built (this repo) | Express + PostgreSQL. It receives scans, maps them and computes attendance. |
+| Attendance API | Built and hosted (this repo) | Express + PostgreSQL. It receives scans, maps them and computes attendance. A read-only public view runs at https://attendance-api.alirezaafshan.com. |
 | SIS | Simulated | `courses`, `rooms`, `schedule`, `registration` and `lectures` hold demo data until the university SIS fields are confirmed. |
 | Student app | Reads this API | `urep-student-attendance/mobile-app` signs in with a student ID and loads `GET /students/:id/overview` through its same-origin `/api` proxy. Its `src/domain/pipeline.ts` mirrors the API rules, to explain each scan and preview other parameter values. |
 

@@ -39,7 +39,7 @@ Backend for the UREP 32 palm-reader attendance project (UDST). The supervisors a
 
 ### Hosting
 
-Deploy Manager on Alireza's VPS releases validated `main` commits as app `urep-attendance-api`: loopback port 3340, health `/health`, runtime env `/etc/deploy-manager/runtime-env/urep-attendance-api.env` (root-only, holds `DATABASE_URL`). It has no public route. The DNS name in the manager's topology is a placeholder, with no record or Caddy site behind it. Keep it that way while the write endpoints are unauthenticated.
+Deploy Manager on Alireza's VPS releases validated `main` commits as app `urep-attendance-api`: loopback port 3340, health `/health`, runtime env `/etc/deploy-manager/runtime-env/urep-attendance-api.env` (root-only, holds `DATABASE_URL`). Its public face, https://attendance-api.alirezaafshan.com (proxied Cloudflare A record; Caddy site `/etc/caddy/sites/attendance-api.alirezaafshan.com.caddy`), is read-only: Caddy passes only GET/HEAD on `/health`, `/parameters`, `/attendance` and `/students/*/overview`, describes those routes at `/`, and returns 404 for everything else. Keep the writes off the public site until they have authentication; readers and the simulator reach the API privately.
 
 - PostgreSQL runs as the long-lived container `urep-attendance-postgres` (volume `urep-attendance-postgres-data`) on the private network `urep-attendance-private`. Rollouts never touch it, and migrations run when the API starts.
 - The student app (`urep-attendance`) joins the same network and proxies its reads through `ATTENDANCE_API_URL=http://urep-attendance-api:3000`.
